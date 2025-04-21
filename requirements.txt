@@ -1,0 +1,4 @@
+flask
+confluent-kafka
+pymongo
+python-dotenv
