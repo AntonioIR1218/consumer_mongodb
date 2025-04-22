@@ -51,20 +51,27 @@ def enrich_track_data(data):
     try:
         # Calcular duración en minutos
         data['duration_min'] = round(data.get('duration_ms', 0) / 60000, 2)
-        
+
         # Clasificar energía
-        energy = data.get('energy', 0)
+        energy_raw = data.get('energy', 0)
+        try:
+            energy = float(energy_raw)
+        except (ValueError, TypeError):
+            logging.warning(f"Valor inválido de energy: {energy_raw}")
+            energy = 0.0
+
         if energy > 0.8:
             data['energy_level'] = 'high'
         elif energy > 0.5:
             data['energy_level'] = 'medium'
         else:
             data['energy_level'] = 'low'
-            
+
         return data
     except Exception as e:
         logging.warning(f"Error enriqueciendo datos: {e}")
         return data
+
 
 def insert_track(data):
     try:
